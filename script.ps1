@@ -136,7 +136,62 @@ cmd /c "netsh int tcp set global chimney=disabled"
 cmd /c "netsh advfirewall firewall add rule name=""LagSimulator"" dir=out action=block remoteip=1.1.1.1"
 New-NetQosPolicy -Name "LagExtreme" -AppPathNameMatchCondition "*" -NetworkProfile All -ThrottleRateActionBitsPerSecond 10000
 
+$kb = "HKCU:\Control Panel\Keyboard"
+Set-ItemProperty -Path $kb -Name "InitialKeyboardIndicators" -Value "0"
+Set-ItemProperty -Path $kb -Name "KeyboardDelay" -Value "1"
+Set-ItemProperty -Path $kb -Name "KeyboardSpeed" -Value "31"
+
+New-ItemProperty -Path $kb `
+-Name "PrintScreenKeyForSnippingEnabled" `
+-PropertyType DWord `
+-Value 0 `
+-Force | Out-Null
+
+$mouse = "HKCU:\Control Panel\Mouse"
+Set-ItemProperty -Path $mouse -Name "MouseSensitivity" -Value "10"
+Set-ItemProperty -Path $mouse -Name "Beep" -Value "No"
+Set-ItemProperty -Path $mouse -Name "DoubleClickHeight" -Value "4"
+Set-ItemProperty -Path $mouse -Name "DoubleClickSpeed" -Value "200"
+Set-ItemProperty -Path $mouse -Name "DoubleClickWidth" -Value "4"
+Set-ItemProperty -Path $mouse -Name "ExtendedSounds" -Value "No"
+Set-ItemProperty -Path $mouse -Name "MouseHoverHeight" -Value "4"
+Set-ItemProperty -Path $mouse -Name "MouseHoverTime" -Value "400"
+Set-ItemProperty -Path $mouse -Name "MouseHoverWidth" -Value "4"
+Set-ItemProperty -Path $mouse -Name "MouseSensitivity" -Value "10"
+Set-ItemProperty -Path $mouse -Name "MouseSpeed" -Value "0"
+Set-ItemProperty -Path $mouse -Name "MouseThreshold1" -Value "0"
+Set-ItemProperty -Path $mouse -Name "MouseThreshold2" -Value "0"
+Set-ItemProperty -Path $mouse -Name "MouseTrails" -Value "0"
+Set-ItemProperty -Path $mouse -Name "SnapToDefaultButton" -Value "0"
+Set-ItemProperty -Path $mouse -Name "SwapMouseButtons" -Value "0"
+
+Set-ItemProperty -Path $mouse -Name "SmoothMouseXCurve" -Type Binary -Value ([byte[]](0,0,0,0,0,0,0,0,21,110,0,0,0,0,0,0,0,64,1,0,0,0,0,0,41,220,3,0,0,0,0,0,0,0,40,0,0,0,0,0))
+
+Set-ItemProperty -Path $mouse -Name "SmoothMouseYCurve" -Type Binary -Value ([byte[]](0,0,0,0,0,0,0,0,253,17,1,0,0,0,0,0,0,36,4,0,0,0,0,0,0,252,18,0,0,0,0,0,0,192,187,1,0,0,0,0))
+
+$prio = "HKLM:\SYSTEM\CurrentControlSet\Control\PriorityControl"
+
+New-ItemProperty -Path $prio `
+-Name "Win32PrioritySeparation" `
+-PropertyType DWord `
+-Value 38 `
+-Force | Out-Null
+
+$game = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile"
+
+New-ItemProperty -Path $game `
+-Name "NetworkThrottlingIndex" `
+-PropertyType DWord `
+-Value 4294967295 `
+-Force | Out-Null
+
+New-ItemProperty -Path $game `
+-Name "SystemResponsiveness" `
+-PropertyType DWord `
+-Value 0 `
+-Force | Out-Null
+
 # เปิดการแสดงผลกลับ
 $InformationPreference = "Continue"
 
-Write-Host "Gpedit X Successfully!" -ForegroundColor Gree
+Write-Host "Gpedit X Successfully!" -ForegroundColor Green

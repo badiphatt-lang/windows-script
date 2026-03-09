@@ -145,13 +145,13 @@ New-Item -Path $qos -Force | Out-Null
 New-ItemProperty -Path $qos `
 -Name "MaxOutstandingSends" `
 -PropertyType DWord `
--Value 65536 `
+-Value 12 `
 -Force | Out-Null
 
 New-ItemProperty -Path $qos `
 -Name "NonBestEffortLimit" `
 -PropertyType DWord `
--Value 0 `
+-Value 12 `
 -Force | Out-Null
 
 New-ItemProperty -Path $qos `

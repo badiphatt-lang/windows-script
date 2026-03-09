@@ -1,7 +1,7 @@
 # Run as Admin
 if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
     Start-Process powershell -ArgumentList "-ExecutionPolicy Bypass -Command `"iwr -useb https://raw.githubusercontent.com/badiphat-lang/windows-script/main/script.ps1 | iex`"" -Verb RunAs
-    exit
+    exitฏ
 }
 
 function Write-Host { Microsoft.PowerShell.Utility\Write-Host "Successfully." -ForegroundColor Yellow }
@@ -197,3 +197,5 @@ New-ItemProperty -Path $game `
 $InformationPreference = "Continue"
 
 Microsoft.PowerShell.Utility\Write-Host "Gpedit X Successfully!" -ForegroundColor Green
+Start-Sleep 1
+exit

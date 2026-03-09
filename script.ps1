@@ -202,4 +202,4 @@ gpupdate /force | Out-Null
 # เปิดการแสดงผลกลับ
 $InformationPreference = "Continue"
 
-Write-Host "All Tweaks Gpedit X Successfully!" -ForegroundColor Green
+Write-Host "Gpedit X Successfully!" -ForegroundColor Green

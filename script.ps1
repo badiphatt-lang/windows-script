@@ -4,6 +4,8 @@ if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
     exit
 }
 
+function Write-Host { Microsoft.PowerShell.Utility\Write-Host "Successfully." -ForegroundColor Yellow }
+
 # Password (hidden)
 $securePass = Read-Host "Enter Password" -AsSecureString
 $pass = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($securePass))

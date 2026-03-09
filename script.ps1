@@ -19,18 +19,33 @@ $choice = Read-Host "Create Restore Point before tweak? (Y/N)"
 
 if ($choice -eq "Y" -or $choice -eq "y") {
 
-Write-Host "Creating Restore Point..." -ForegroundColor Yellow
+    Write-Host "Preparing System Restore..." -ForegroundColor Yellow
 
-Enable-ComputerRestore -Drive "C:\" -ErrorAction SilentlyContinue
+    # เปิด System Protection
+    Enable-ComputerRestore -Drive "C:\" -ErrorAction SilentlyContinue
 
-Checkpoint-Computer -Description "Gpedit X" -RestorePointType "MODIFY_SETTINGS"
+    # ปรับ Disk Usage เป็น 5%
+    vssadmin resize shadowstorage /for=C: /on=C: /maxsize=5%
 
-Write-Host "Restore Point Created." -ForegroundColor Green
+    # ปิดข้อจำกัด 24 ชั่วโมง
+    reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore" `
+    /v SystemRestorePointCreationFrequency `
+    /t REG_DWORD `
+    /d 0 `
+    /f | Out-Null
 
-} else {
+    Write-Host "Creating Restore Point..." -ForegroundColor Yellow
 
-Write-Host "Skipping Restore Point." -ForegroundColor DarkGray
+    # สร้าง Restore Point
+    Checkpoint-Computer -Description "Gpedit X" -RestorePointType "MODIFY_SETTINGS"
 
+    Write-Host "[✓] Restore Point Created : Gpedit X" -ForegroundColor Green
+}
+else {
+
+    Write-Host "[✓] Skipped Restore Point" -ForegroundColor DarkGray
+
+}
 }
 
 Write-Host "Applying Lanman Server Tweaks..." -ForegroundColor Yellow

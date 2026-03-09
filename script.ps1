@@ -17,9 +17,13 @@ Write-Host "Running Script..." -ForegroundColor Cyan
 
 # ===== Tweaks =====
 
-powercfg -setactive SCHEME_MIN
-netsh int tcp set global autotuninglevel=disabled
+reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v Smb2CipherSuiteOrder /t REG_MULTI_SZ /d "AES_256_GCM\0AES_256_GCM\0AES_256_GCM\0AES_256_GCM\0" /f
 
+reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v Smb2HonorCipherSuiteOrder /t REG_DWORD /d 1 /f
+
+reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\LanmanServer" /v HashPublicationForBranchCache /t REG_DWORD /d 1 /f
+
+reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\LanmanServer" /v HashVersionSupportForBranchCache /t REG_DWORD /d 1 /fป
 # ==================
 
 Write-Host "Ok." -ForegroundColor Green

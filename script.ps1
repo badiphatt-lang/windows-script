@@ -15,6 +15,23 @@ if ($pass -ne "dotexe") {
 
 Write-Host "Running Script..." -ForegroundColor Cyan
 
+$choice = Read-Host "Create Restore Point before tweak? (Y/N)"
+
+if ($choice -eq "Y" -or $choice -eq "y") {
+
+Write-Host "Creating Restore Point..." -ForegroundColor Yellow
+
+Enable-ComputerRestore -Drive "C:\" -ErrorAction SilentlyContinue
+
+Checkpoint-Computer -Description "Gpedit X" -RestorePointType "MODIFY_SETTINGS"
+
+Write-Host "Restore Point Created." -ForegroundColor Green
+
+} else {
+
+Write-Host "Skipping Restore Point." -ForegroundColor DarkGray
+
+}
 
 Write-Host "Applying Lanman Server Tweaks..." -ForegroundColor Yellow
 

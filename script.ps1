@@ -18,10 +18,11 @@ Write-Host "Running Script..." -ForegroundColor Cyan
 
 Write-Host "Applying Lanman Server Tweaks..." -ForegroundColor Yellow
 
-
 $path1 = "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters"
+$path2 = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LanmanServer"
 
 New-Item -Path $path1 -Force | Out-Null
+New-Item -Path $path2 -Force | Out-Null
 
 New-ItemProperty -Path $path1 `
 -Name "Smb2CipherSuiteOrder" `
@@ -49,11 +50,6 @@ New-ItemProperty -Path $path2 `
 -Value 1 `
 -Force | Out-Null
 
-# ===== GPEDIT POLICY VALUES =====
-
-$path2 = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LanmanServer"
-
-New-Item -Path $path2 -Force | Out-Null
 
 New-ItemProperty -Path $path2 `
 -Name "HashPublicationForBranchCache" `
@@ -82,6 +78,7 @@ New-ItemProperty -Path $path3 `
 
 Write-Host "Lanman Server Tweaks Applied!" -ForegroundColor Green
 
+
 Write-Host "Applying Lanman Workstation Tweaks..." -ForegroundColor Yellow
 
 $path4 = "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters"
@@ -101,6 +98,7 @@ New-ItemProperty -Path $path4 `
 -Force | Out-Null
 
 Write-Host "Lanman Workstation Tweaks Applied!" -ForegroundColor Green
+
 
 Write-Host "Applying Network Isolation Tweaks..." -ForegroundColor Yellow
 
@@ -140,6 +138,7 @@ New-ItemProperty -Path $path5 `
 
 Write-Host "Network Isolation Tweaks Applied!" -ForegroundColor Green
 
+
 Write-Host "Applying QoS Packet Scheduler Tweaks..." -ForegroundColor Yellow
 
 $qos = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Psched"
@@ -166,6 +165,7 @@ New-ItemProperty -Path $qos `
 
 Write-Host "QoS Tweaks Applied!" -ForegroundColor Green
 
+
 Write-Host "Applying Network Provider Tweaks..." -ForegroundColor Yellow
 
 $provider = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider"
@@ -180,7 +180,8 @@ New-ItemProperty -Path $provider `
 
 Write-Host "Network Provider Tweaks Applied!" -ForegroundColor Green
 
-Write-Host "Applying Privacy Tweaks..." -ForegroundColor Yellow
+
+Write-Host "Applying Background Apps Policy..." -ForegroundColor Yellow
 
 $privacy = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy"
 
@@ -189,14 +190,12 @@ New-Item -Path $privacy -Force | Out-Null
 New-ItemProperty -Path $privacy `
 -Name "LetAppsRunInBackground" `
 -PropertyType DWord `
--Value 1 `
+-Value 2 `
 -Force | Out-Null
 
-Write-Host "Privacy Tweaks Applied!" -ForegroundColor Green
+Write-Host "Background Apps Forced Deny Applied!" -ForegroundColor Green
 
-Restart-Service LanmanServer -Force -ErrorAction SilentlyContinue
-Restart-Service LanmanWorkstation -Force -ErrorAction SilentlyContinue
 
 gpupdate /force
 
-Write-Host "All Tweaks Gpedit X Successfully!" -ForegroundColor Gree
+Write-Host "All Tweaks Gpedit X Successfully!" -ForegroundColor Green

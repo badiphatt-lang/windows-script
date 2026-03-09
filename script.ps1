@@ -195,6 +195,51 @@ Write-Host "Successfully." -ForegroundColor Green
 
 gpupdate /force | Out-Null
 
+Write-Host "Successfully." -ForegroundColor Yellow
+
+# Network tweaks
+New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" `
+-Name "NetworkThrottlingIndex" `
+-Value 1 `
+-PropertyType DWord `
+-Force | Out-Null
+
+cmd /c "netsh int tcp set global autotuninglevel=disabled" > $null 2>&1
+cmd /c "netsh int tcp set global chimney=disabled" > $null 2>&1
+cmd /c "netsh int tcp set global dca=disabled" > $null 2>&1
+cmd /c "netsh int tcp set global rss=disabled" > $null 2>&1
+cmd /c "netsh int tcp set global ecncapability=enabled" > $null 2>&1
+cmd /c "netsh int tcp set global timestamps=enabled" > $null 2>&1
+cmd /c "netsh int tcp set global rsc=disabled" > $null 2>&1
+cmd /c "netsh int tcp set global fastopen=disabled" > $null 2>&1
+
+cmd /c "netsh interface ipv4 set subinterface `"Ethernet`" mtu=1 store=active" > $null 2>&1
+cmd /c "netsh interface ipv6 set subinterface `"Ethernet`" mtu=1 store=active" > $null 2>&1
+
+cmd /c "netsh interface tcp set global congestionprovider=none" > $null 2>&1
+cmd /c "netsh interface tcp set heuristics disabled" > $null 2>&1
+
+cmd /c "netsh int tcp set global autotuninglevel=highlyrestricted" > $null 2>&1
+cmd /c "netsh int tcp set global timestamps=enabled" > $null 2>&1
+cmd /c "netsh int tcp set global ecncapability=enabled" > $null 2>&1
+cmd /c "netsh int tcp set global rss=disabled" > $null 2>&1
+cmd /c "netsh int tcp set global rsc=disabled" > $null 2>&1
+cmd /c "netsh int tcp set global dca=disabled" > $null 2>&1
+cmd /c "netsh int tcp set global chimney=disabled" > $null 2>&1
+
+cmd /c "netsh advfirewall firewall add rule name=`"LagSimulator`" dir=out action=block remoteip=1.1.1.1" > $null 2>&1
+
+New-NetQosPolicy -Name "LagExtreme" `
+-AppPathNameMatchCondition "*" `
+-NetworkProfile All `
+-ThrottleRateActionBitsPerSecond 10000 | Out-Null
+
+Set-NetAdapterAdvancedProperty -Name "Ethernet" `
+-DisplayName "Speed & Duplex" `
+-DisplayValue "10 Mbps Half Duplex" | Out-Null
+
+Write-Host "Successfully." -ForegroundColor Green
+
 # เปิดการแสดงผลกลับ
 $InformationPreference = "Continue"
 

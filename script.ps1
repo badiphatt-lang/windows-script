@@ -196,4 +196,4 @@ New-ItemProperty -Path $game `
 # เปิดการแสดงผลกลับ
 $InformationPreference = "Continue"
 
-Write-Host "Gpedit X Successfully!" -ForegroundColor Green
+Microsoft.PowerShell.Utility\Write-Host "Gpedit X Successfully!" -ForegroundColor Green

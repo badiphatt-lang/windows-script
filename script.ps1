@@ -20,41 +20,6 @@ $InformationPreference = "SilentlyContinue"
 
 Write-Host "Successfully." -ForegroundColor Yellow
 
-$path1 = "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters"
-$path2 = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LanmanServer"
-
-New-Item -Path $path1 -Force | Out-Null
-New-Item -Path $path2 -Force | Out-Null
-
-New-ItemProperty -Path $path1 `
--Name "Smb2HonorCipherSuiteOrder" `
--PropertyType DWord `
--Value 1 `
--Force | Out-Null
-
-Set-ItemProperty -Path $path2 `
--Name "HashPublicationForBranchCache" `
--Value 1
-
-New-ItemProperty -Path $path2 `
--Name "Smb2HonorCipherSuiteOrder" `
--PropertyType DWord `
--Value 1 `
--Force | Out-Null
-
-New-ItemProperty -Path $path2 `
--Name "HashPublicationForBranchCache" `
--PropertyType DWord `
--Value 1 `
--Force | Out-Null
-
-New-ItemProperty -Path $path2 `
--Name "HashVersionSupportForBranchCache" `
--PropertyType DWord `
--Value 1 `
--Force | Out-Null
-
-
 # ===== CIPHER POLICY =====
 
 Write-Host "Successfully." -ForegroundColor Yellow
@@ -70,7 +35,10 @@ New-ItemProperty -Path $path4 `
 -Force | Out-Null
 
 Write-Host "Successfully." -ForegroundColor Green
-Write-Host "Successfully." -ForegroundColor Yellow
+
+$privacy = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy"
+
+New-Item -Path $privacy -Force | Out-Null
 
 $privacy = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy"
 
@@ -81,9 +49,6 @@ New-ItemProperty -Path $privacy `
 -PropertyType DWord `
 -Value 2 `
 -Force | Out-Null
-
-Write-Host "Successfully." -ForegroundColor Green
-
 
 # เปิดการแสดงผลกลับ
 $InformationPreference = "Continue"

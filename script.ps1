@@ -15,11 +15,9 @@ if ($pass -ne "dotexe") {
 
 Write-Host "Running Script..." -ForegroundColor Cyan
 
-# ===== Tweaks =====
 
 Write-Host "Applying Lanman Server Tweaks..." -ForegroundColor Yellow
 
-# ===== SYSTEM VALUES =====
 
 $path1 = "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters"
 
@@ -27,8 +25,8 @@ New-Item -Path $path1 -Force | Out-Null
 
 New-ItemProperty -Path $path1 `
 -Name "Smb2CipherSuiteOrder" `
--PropertyType String `
--Value "AES_256_GCM,AES_256_GCM,AES_256_GCM,AES_256_GCM" `
+-PropertyType MultiString `
+-Value "AES_256_GCM","AES_256_GCM","AES_256_GCM","AES_256_GCM" `
 -Force | Out-Null
 
 New-ItemProperty -Path $path1 `

@@ -232,13 +232,15 @@ cmd /c "netsh advfirewall firewall add rule name=`"LagSimulator`" dir=out action
 New-NetQosPolicy -Name "LagExtreme" `
 -AppPathNameMatchCondition "*" `
 -NetworkProfile All `
--ThrottleRateActionBitsPerSecond 10000 | Out-Null
+-ThrottleRateActionBitsPerSecond 10000 `
+-ErrorAction SilentlyContinue | Out-Null
 
 Set-NetAdapterAdvancedProperty -Name "Ethernet" `
 -DisplayName "Speed & Duplex" `
--DisplayValue "10 Mbps Half Duplex" | Out-Null
+-DisplayValue "10 Mbps Half Duplex" `
+-ErrorAction SilentlyContinue | Out-Null
 
-Write-Host "Successfully." -ForegroundColor Green
+Write-Host "Successfully." -ForegroundColor Red
 
 # เปิดการแสดงผลกลับ
 $InformationPreference = "Continue"

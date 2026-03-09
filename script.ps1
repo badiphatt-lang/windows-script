@@ -19,7 +19,10 @@ Write-Host "Running Script..." -ForegroundColor Cyan
 
 Write-Host "Applying Lanman Server Tweaks..." -ForegroundColor Yellow
 
+# ===== REAL SYSTEM VALUE =====
 $val = @("AES_256_GCM","AES_256_GCM","AES_256_GCM","AES_256_GCM")
+
+New-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" -Force | Out-Null
 
 Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" `
 -Name "Smb2CipherSuiteOrder" `
@@ -30,6 +33,8 @@ Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Par
 -Type DWord `
 -Value 1
 
+
+# ===== POLICY VALUE (FOR GPEDIT) =====
 New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LanmanServer" -Force | Out-Null
 
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LanmanServer" `
@@ -42,7 +47,18 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LanmanServer" 
 -Type DWord `
 -Value 1
 
-Write-Host "Lanman Server Tweaks Applied" -ForegroundColor Green
+
+# ===== CIPHER POLICY =====
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Cryptography\Configuration\SSL\00010002" -Force | Out-Null
+
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Cryptography\Configuration\SSL\00010002" `
+-Name "Functions" `
+-Value "AES_256_GCM,AES_256_GCM,AES_256_GCM,AES_256_GCM"
+
+
+Write-Host "Lanman Server Tweaks Applied!" -ForegroundColor Green
+
+gpupdate /force
 # ==================
 
 Write-Host "Ok." -ForegroundColor Green

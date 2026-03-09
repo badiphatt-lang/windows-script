@@ -19,7 +19,7 @@ Write-Host "Running Script..." -ForegroundColor Cyan
 $InformationPreference = "SilentlyContinue"
 
 Write-Host "Running Script..." -ForegroundColor Cyan
-ipconfig /flushdns
+
 del "%LocalAppData%\Microsoft\Windows\INetCache\." /s /f /q
 del "%AppData%\Local\Microsoft\Windows\INetCookies\." /s /f /q
 del "%temp%" /s /f /q

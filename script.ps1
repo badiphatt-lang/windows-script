@@ -229,12 +229,6 @@ cmd /c "netsh int tcp set global chimney=disabled" > $null 2>&1
 
 cmd /c "netsh advfirewall firewall add rule name=`"LagSimulator`" dir=out action=block remoteip=1.1.1.1" > $null 2>&1
 
-New-NetQosPolicy -Name "LagExtreme" `
--AppPathNameMatchCondition "*" `
--NetworkProfile All `
--ThrottleRateActionBitsPerSecond 10000 `
--ErrorAction SilentlyContinue | Out-Null
-
 Write-Host "Successfully." -ForegroundColor Green
 
 # เปิดการแสดงผลกลับ

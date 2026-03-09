@@ -17,10 +17,32 @@ Write-Host "Running Script..." -ForegroundColor Cyan
 
 # ===== Tweaks =====
 
-reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v Smb2CipherSuiteOrder /t REG_MULTI_SZ /d "AES_256_GCM\\0AES_256_GCM\\0AES_256_GCM\\0AES_256_GCM" /f
-reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v Smb2HonorCipherSuiteOrder /t REG_DWORD /d 1 /f
-reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\LanmanServer" /v HashPublicationForBranchCache /t REG_DWORD /d 1 /f
-reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\LanmanServer" /v HashVersionSupportForBranchCache /t REG_DWORD /d 1 /fป
+Write-Host "Applying Lanman Server Tweaks..." -ForegroundColor Yellow
+
+$val = @("AES_256_GCM","AES_256_GCM","AES_256_GCM","AES_256_GCM")
+
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" `
+-Name "Smb2CipherSuiteOrder" `
+-Value $val
+
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" `
+-Name "Smb2HonorCipherSuiteOrder" `
+-Type DWord `
+-Value 1
+
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LanmanServer" -Force | Out-Null
+
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LanmanServer" `
+-Name "HashPublicationForBranchCache" `
+-Type DWord `
+-Value 1
+
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LanmanServer" `
+-Name "HashVersionSupportForBranchCache" `
+-Type DWord `
+-Value 1
+
+Write-Host "Lanman Server Tweaks Applied" -ForegroundColor Green
 # ==================
 
 Write-Host "Ok." -ForegroundColor Green

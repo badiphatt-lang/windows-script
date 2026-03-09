@@ -19,24 +19,31 @@ $choice = Read-Host "Create Restore Point before tweak? (Y/N)"
 
 if ($choice -eq "Y" -or $choice -eq "y") {
 
-Write-Host "Preparing System Restore..." -ForegroundColor Yellow
+    Write-Host "Preparing System Restore..." -ForegroundColor Yellow
 
-$choice = Read-Host "Create Restore Point before tweak? (Y/N)"
+    # เปิด System Protection
+    Enable-ComputerRestore -Drive "C:\" -ErrorAction SilentlyContinue
 
-if ($choice -eq "Y" -or $choice -eq "y") {
+    # ปรับพื้นที่ restore เป็น 5%
+    vssadmin resize shadowstorage /for=C: /on=C: /maxsize=5% | Out-Null
 
-Write-Host "Preparing System Restore..." -ForegroundColor Yellow
+    # ลบ restore point เก่า
+    vssadmin delete shadows /for=C: /all /quiet
 
-# เปิด System Protection
-Enable-ComputerRestore -Drive "C:\" -ErrorAction SilentlyContinue
+    Start-Sleep 2
 
-# ปรับพื้นที่เป็น 5%
-vssadmin resize shadowstorage /for=C: /on=C: /maxsize=5% | Out-Null
+    Write-Host "Creating Restore Point..." -ForegroundColor Yellow
 
-# ลบ restore point เก่า
-vssadmin delete shadows /for=C: /all /quiet
+    Checkpoint-Computer -Description "Gpedit X" -RestorePointType MODIFY_SETTINGS
 
-Start-Sleep 2
+    Write-Host "[✓] Restore Point Created : Gpedit X" -ForegroundColor Green
+
+}
+else {
+
+    Write-Host "[✓] Skipped Restore Point" -ForegroundColor DarkGray
+
+}
 
 Write-Host "Creating Restore Point..." -ForegroundColor Yellow
 

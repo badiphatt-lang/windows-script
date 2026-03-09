@@ -42,10 +42,6 @@ Set-ItemProperty -Path $path2 `
 -Name "HashPublicationForBranchCache" `
 -Value 1
 
-Set-ItemProperty -Path $path2 `
--Name "HashVersionSupportForBranchCache" `
--Value 3
-
 New-ItemProperty -Path $path2 `
 -Name "Smb2HonorCipherSuiteOrder" `
 -PropertyType DWord `

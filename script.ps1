@@ -235,11 +235,6 @@ New-NetQosPolicy -Name "LagExtreme" `
 -ThrottleRateActionBitsPerSecond 10000 `
 -ErrorAction SilentlyContinue | Out-Null
 
-Set-NetAdapterAdvancedProperty -Name "Ethernet" `
--DisplayName "Speed & Duplex" `
--DisplayValue "10 Mbps Half Duplex" `
--ErrorAction SilentlyContinue | Out-Null
-
 Write-Host "Successfully." -ForegroundColor Green
 
 # เปิดการแสดงผลกลับ

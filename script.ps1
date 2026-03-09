@@ -42,10 +42,6 @@ Set-ItemProperty -Path $path2 `
 -Name "HashPublicationForBranchCache" `
 -Value 1
 
-Set-ItemProperty -Path $path2 `
--Name "HashVersionSupportForBranchCache" `
--Value 3
-
 New-ItemProperty -Path $path2 `
 -Name "Smb2HonorCipherSuiteOrder" `
 -PropertyType DWord `
@@ -67,30 +63,11 @@ New-ItemProperty -Path $path2 `
 
 # ===== CIPHER POLICY =====
 
-$path3 = "HKLM:\SOFTWARE\Policies\Microsoft\Cryptography\Configuration\SSL\00010002"
-
-New-Item -Path $path3 -Force | Out-Null
-
-New-ItemProperty -Path $path3 `
--Name "Functions" `
--PropertyType MultiString `
--Value "AES_256_GCM","AES_256_GCM","AES_256_GCM","AES_256_GCM" `
--Force | Out-Null
-
-Write-Host "Successfully." -ForegroundColor Green
-
-
 Write-Host "Successfully." -ForegroundColor Yellow
 
 $path4 = "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters"
 
 New-Item -Path $path4 -Force | Out-Null
-
-New-ItemProperty -Path $path4 `
--Name "Smb2CipherSuiteOrder" `
--PropertyType MultiString `
--Value "AES_256_GCM","AES_256_GCM","AES_256_GCM","AES_256_GCM" `
--Force | Out-Null
 
 New-ItemProperty -Path $path4 `
 -Name "Smb2HonorCipherSuiteOrder" `

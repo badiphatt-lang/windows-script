@@ -162,21 +162,7 @@ New-ItemProperty -Path $qos `
 
 Write-Host "Successfully." -ForegroundColor Green
 
-
 Write-Host "Successfully." -ForegroundColor Yellow
-
-$provider = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider"
-
-New-Item -Path $provider -Force | Out-Null
-
-New-ItemProperty -Path $provider `
--Name "latancy" `
--PropertyType String `
--Value "999999999" `
--Force | Out-Null
-
-Write-Host "Successfully." -ForegroundColor Green
-
 
 Write-Host "Successfully." -ForegroundColor Yellow
 
@@ -191,18 +177,6 @@ New-ItemProperty -Path $privacy `
 -Force | Out-Null
 
 Write-Host "Successfully." -ForegroundColor Green
-
-
-gpupdate /force | Out-Null
-
-Write-Host "Successfully." -ForegroundColor Yellow
-
-# Network tweaks
-New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" `
--Name "NetworkThrottlingIndex" `
--Value 1 `
--PropertyType DWord `
--Force | Out-Null
 
 Write-Host "Successfully." -ForegroundColor Green
 

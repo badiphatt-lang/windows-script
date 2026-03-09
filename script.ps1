@@ -19,48 +19,57 @@ Write-Host "Running Script..." -ForegroundColor Cyan
 
 Write-Host "Applying Lanman Server Tweaks..." -ForegroundColor Yellow
 
-# ===== REAL SYSTEM VALUE =====
-$val = @("AES_256_GCM","AES_256_GCM","AES_256_GCM","AES_256_GCM")
+# ===== SYSTEM VALUES =====
 
-New-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" -Force | Out-Null
+$path1 = "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters"
 
-Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" `
+New-Item -Path $path1 -Force | Out-Null
+
+New-ItemProperty -Path $path1 `
 -Name "Smb2CipherSuiteOrder" `
--Value $val
+-PropertyType String `
+-Value "AES_256_GCM,AES_256_GCM,AES_256_GCM,AES_256_GCM" `
+-Force | Out-Null
 
-Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" `
+New-ItemProperty -Path $path1 `
 -Name "Smb2HonorCipherSuiteOrder" `
--Type DWord `
--Value 1
+-PropertyType DWord `
+-Value 1 `
+-Force | Out-Null
 
 
-# ===== POLICY VALUE (FOR GPEDIT) =====
-New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LanmanServer" -Force | Out-Null
+# ===== GPEDIT POLICY VALUES =====
 
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LanmanServer" `
+$path2 = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LanmanServer"
+
+New-Item -Path $path2 -Force | Out-Null
+
+New-ItemProperty -Path $path2 `
 -Name "HashPublicationForBranchCache" `
--Type DWord `
--Value 1
+-PropertyType DWord `
+-Value 1 `
+-Force | Out-Null
 
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LanmanServer" `
+New-ItemProperty -Path $path2 `
 -Name "HashVersionSupportForBranchCache" `
--Type DWord `
--Value 1
+-PropertyType DWord `
+-Value 1 `
+-Force | Out-Null
 
 
 # ===== CIPHER POLICY =====
-New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Cryptography\Configuration\SSL\00010002" -Force | Out-Null
 
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Cryptography\Configuration\SSL\00010002" `
+$path3 = "HKLM:\SOFTWARE\Policies\Microsoft\Cryptography\Configuration\SSL\00010002"
+
+New-Item -Path $path3 -Force | Out-Null
+
+New-ItemProperty -Path $path3 `
 -Name "Functions" `
--Value "AES_256_GCM,AES_256_GCM,AES_256_GCM,AES_256_GCM"
+-PropertyType String `
+-Value "AES_256_GCM,AES_256_GCM,AES_256_GCM,AES_256_GCM" `
+-Force | Out-Null
 
 
 Write-Host "Lanman Server Tweaks Applied!" -ForegroundColor Green
-
-gpupdate /force
-# ==================
-
-Write-Host "Ok." -ForegroundColor Green
 
 gpupdate /force

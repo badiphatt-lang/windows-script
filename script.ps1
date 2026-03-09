@@ -18,6 +18,39 @@ Write-Host "Successfully." -ForegroundColor Yellow
 
 Write-Host "Running Script..." -ForegroundColor Cyan
 
+Write-Host "Applying Lanman Server Tweaks..." -ForegroundColor Yellow
+
+$path1 = "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters"
+
+New-Item -Path $path1 -Force | Out-Null
+
+New-ItemProperty -Path $path1 `
+-Name "Smb2CipherSuiteOrder" `
+-PropertyType MultiString `
+-Value "AES_256_GCM" `
+-Force | Out-Null
+
+New-ItemProperty -Path $path1 `
+-Name "Smb2HonorCipherSuiteOrder" `
+-PropertyType DWord `
+-Value 1 `
+-Force | Out-Null
+
+
+Set-ItemProperty -Path $path2 `
+-Name "HashPublicationForBranchCache" `
+-Value 1
+
+Set-ItemProperty -Path $path2 `
+-Name "HashVersionSupportForBranchCache" `
+-Value 3
+
+New-ItemProperty -Path $path2 `
+-Name "Smb2HonorCipherSuiteOrder" `
+-PropertyType DWord `
+-Value 1 `
+-Force | Out-Null
+
 Write-Host "Applying Network Isolation Tweaks..." -ForegroundColor Yellow
 
 $path5 = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkIsolation"

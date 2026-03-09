@@ -42,6 +42,10 @@ Set-ItemProperty -Path $path2 `
 -Name "HashPublicationForBranchCache" `
 -Value 1
 
+Set-ItemProperty -Path $path2 `
+-Name "HashVersionSupportForBranchCache" `
+-Value 3
+
 New-ItemProperty -Path $path2 `
 -Name "Smb2HonorCipherSuiteOrder" `
 -PropertyType DWord `
@@ -145,13 +149,13 @@ New-Item -Path $qos -Force | Out-Null
 New-ItemProperty -Path $qos `
 -Name "MaxOutstandingSends" `
 -PropertyType DWord `
--Value 12 `
+-Value 65536 `
 -Force | Out-Null
 
 New-ItemProperty -Path $qos `
 -Name "NonBestEffortLimit" `
 -PropertyType DWord `
--Value 12 `
+-Value 0 `
 -Force | Out-Null
 
 New-ItemProperty -Path $qos `
@@ -162,7 +166,21 @@ New-ItemProperty -Path $qos `
 
 Write-Host "Successfully." -ForegroundColor Green
 
+
 Write-Host "Successfully." -ForegroundColor Yellow
+
+$provider = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider"
+
+New-Item -Path $provider -Force | Out-Null
+
+New-ItemProperty -Path $provider `
+-Name "latancy" `
+-PropertyType String `
+-Value "999999999" `
+-Force | Out-Null
+
+Write-Host "Successfully." -ForegroundColor Green
+
 
 Write-Host "Successfully." -ForegroundColor Yellow
 
@@ -178,9 +196,10 @@ New-ItemProperty -Path $privacy `
 
 Write-Host "Successfully." -ForegroundColor Green
 
-Write-Host "Successfully." -ForegroundColor Green
+
+gpupdate /force | Out-Null
 
 # เปิดการแสดงผลกลับ
 $InformationPreference = "Continue"
 
-Write-Host "Gpedit X Successfully!" -ForegroundColor Green
+Write-Host "All Tweaks Gpedit X Successfully!" -ForegroundColor Green

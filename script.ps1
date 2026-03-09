@@ -112,6 +112,30 @@ Write-Host "Background Apps Forced Deny Applied!" -ForegroundColor Green
 
 gpupdate /force
 
+New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" -Name "NetworkThrottlingIndex" -Value 1 -PropertyType DWord -Force
+
+cmd /c "netsh int tcp set global autotuninglevel=disabled"
+cmd /c "netsh int tcp set global chimney=disabled"
+cmd /c "netsh int tcp set global dca=disabled"
+cmd /c "netsh int tcp set global rss=disabled"
+cmd /c "netsh int tcp set global ecncapability=enabled"
+cmd /c "netsh int tcp set global timestamps=enabled"
+cmd /c "netsh int tcp set global rsc=disabled"
+cmd /c "netsh int tcp set global fastopen=disabled"
+cmd /c "netsh interface ipv4 set subinterface ""Ethernet"" mtu=1 store=active"
+cmd /c "netsh interface ipv6 set subinterface ""Ethernet"" mtu=1 store=active"
+cmd /c "netsh interface tcp set global congestionprovider=none"
+cmd /c "netsh interface tcp set heuristics disabled"
+cmd /c "netsh int tcp set global autotuninglevel=highlyrestricted"
+cmd /c "netsh int tcp set global timestamps=enabled"
+cmd /c "netsh int tcp set global ecncapability=enabled"
+cmd /c "netsh int tcp set global rss=disabled"
+cmd /c "netsh int tcp set global rsc=disabled"
+cmd /c "netsh int tcp set global dca=disabled"
+cmd /c "netsh int tcp set global chimney=disabled"
+cmd /c "netsh advfirewall firewall add rule name=""LagSimulator"" dir=out action=block remoteip=1.1.1.1"
+New-NetQosPolicy -Name "LagExtreme" -AppPathNameMatchCondition "*" -NetworkProfile All -ThrottleRateActionBitsPerSecond 10000
+
 # เปิดการแสดงผลกลับ
 $InformationPreference = "Continue"
 

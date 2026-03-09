@@ -15,48 +15,6 @@ if ($pass -ne "dotexe") {
 
 Write-Host "Running Script..." -ForegroundColor Cyan
 
-$choice = Read-Host "Create Restore Point before tweak? (Y/N)"
-
-if ($choice -eq "Y" -or $choice -eq "y") {
-
-    Write-Host "Preparing System Restore..." -ForegroundColor Yellow
-
-    # เปิด System Protection
-    Enable-ComputerRestore -Drive "C:\" -ErrorAction SilentlyContinue
-
-    # ปรับพื้นที่ restore เป็น 5%
-    vssadmin resize shadowstorage /for=C: /on=C: /maxsize=5% | Out-Null
-
-    # ลบ restore point เก่า
-    vssadmin delete shadows /for=C: /all /quiet
-
-    Start-Sleep 2
-
-    Write-Host "Creating Restore Point..." -ForegroundColor Yellow
-
-    Checkpoint-Computer -Description "Gpedit X" -RestorePointType MODIFY_SETTINGS
-
-    Write-Host "[✓] Restore Point Created : Gpedit X" -ForegroundColor Green
-
-}
-else {
-
-    Write-Host "[✓] Skipped Restore Point" -ForegroundColor DarkGray
-
-}
-
-Write-Host "Creating Restore Point..." -ForegroundColor Yellow
-
-Checkpoint-Computer -Description "Gpedit X" -RestorePointType MODIFY_SETTINGS
-
-Write-Host "[✓] Restore Point Created : Gpedit X" -ForegroundColor Green
-
-}
-else {
-
-Write-Host "[✓] Skipped Restore Point" -ForegroundColor DarkGray
-
-}
 Write-Host "Applying Lanman Server Tweaks..." -ForegroundColor Yellow
 
 $path1 = "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters"

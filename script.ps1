@@ -18,8 +18,6 @@ Write-Host "Running Script..." -ForegroundColor Cyan
 # ปิดการแสดงผลทั้งหมด
 $InformationPreference = "SilentlyContinue"
 
-Write-Host "Running Script..." -ForegroundColor Cyan
-
 Write-Host "Successfully." -ForegroundColor Yellow
 
 $path1 = "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters"
@@ -151,13 +149,13 @@ New-Item -Path $qos -Force | Out-Null
 New-ItemProperty -Path $qos `
 -Name "MaxOutstandingSends" `
 -PropertyType DWord `
--Value 12 `
+-Value 65536 `
 -Force | Out-Null
 
 New-ItemProperty -Path $qos `
 -Name "NonBestEffortLimit" `
 -PropertyType DWord `
--Value 12 `
+-Value 0 `
 -Force | Out-Null
 
 New-ItemProperty -Path $qos `
@@ -204,4 +202,4 @@ gpupdate /force | Out-Null
 # เปิดการแสดงผลกลับ
 $InformationPreference = "Continue"
 
-Write-Host "Gpedit X Successfully!" -ForegroundColor Green
+Write-Host "All Tweaks Gpedit X Successfully!" -ForegroundColor Green

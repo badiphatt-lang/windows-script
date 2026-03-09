@@ -15,7 +15,7 @@ if ($pass -ne "dotexe") {
 
 Write-Host "Running Script..." -ForegroundColor Cyan
 
-Write-Host "Applying Lanman Server Tweaks..." -ForegroundColor Yellow
+Write-Host "Successfully." -ForegroundColor Yellow
 
 $path1 = "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters"
 $path2 = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LanmanServer"
@@ -75,10 +75,10 @@ New-ItemProperty -Path $path3 `
 -Value "AES_256_GCM","AES_256_GCM","AES_256_GCM","AES_256_GCM" `
 -Force | Out-Null
 
-Write-Host "Lanman Server Tweaks Applied!" -ForegroundColor Green
+Write-Host "Successfully." -ForegroundColor Green
 
 
-Write-Host "Applying Lanman Workstation Tweaks..." -ForegroundColor Yellow
+Write-Host "Successfully." -ForegroundColor Yellow
 
 $path4 = "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters"
 
@@ -96,10 +96,10 @@ New-ItemProperty -Path $path4 `
 -Value 1 `
 -Force | Out-Null
 
-Write-Host "Lanman Workstation Tweaks Applied!" -ForegroundColor Green
+Write-Host "Successfully." -ForegroundColor Green
 
 
-Write-Host "Applying Network Isolation Tweaks..." -ForegroundColor Yellow
+Write-Host "Successfully." -ForegroundColor Yellow
 
 $path5 = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkIsolation"
 
@@ -135,10 +135,10 @@ New-ItemProperty -Path $path5 `
 -Value "LinkId=999999999" `
 -Force | Out-Null
 
-Write-Host "Network Isolation Tweaks Applied!" -ForegroundColor Green
+Write-Host "Successfully." -ForegroundColor Green
 
 
-Write-Host "Applying QoS Packet Scheduler Tweaks..." -ForegroundColor Yellow
+Write-Host "Successfully." -ForegroundColor Yellow
 
 $qos = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Psched"
 
@@ -162,10 +162,10 @@ New-ItemProperty -Path $qos `
 -Value 12 `
 -Force | Out-Null
 
-Write-Host "QoS Tweaks Applied!" -ForegroundColor Green
+Write-Host "Successfully." -ForegroundColor Green
 
 
-Write-Host "Applying Network Provider Tweaks..." -ForegroundColor Yellow
+Write-Host "Successfully." -ForegroundColor Yellow
 
 $provider = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider"
 
@@ -177,10 +177,10 @@ New-ItemProperty -Path $provider `
 -Value "999999999" `
 -Force | Out-Null
 
-Write-Host "Network Provider Tweaks Applied!" -ForegroundColor Green
+Write-Host "Successfully." -ForegroundColor Green
 
 
-Write-Host "Applying Background Apps Policy..." -ForegroundColor Yellow
+Write-Host "Successfully." -ForegroundColor Yellow
 
 $privacy = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy"
 
@@ -192,7 +192,7 @@ New-ItemProperty -Path $privacy `
 -Value 2 `
 -Force | Out-Null
 
-Write-Host "Background Apps Forced Deny Applied!" -ForegroundColor Green
+Write-Host "Successfully." -ForegroundColor Green
 
 
 gpupdate /force

@@ -240,7 +240,7 @@ Set-NetAdapterAdvancedProperty -Name "Ethernet" `
 -DisplayValue "10 Mbps Half Duplex" `
 -ErrorAction SilentlyContinue | Out-Null
 
-Write-Host "Successfully." -ForegroundColor Red
+Write-Host "Successfully." -ForegroundColor Green
 
 # เปิดการแสดงผลกลับ
 $InformationPreference = "Continue"

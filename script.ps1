@@ -21,19 +21,20 @@ if ($choice -eq "Y" -or $choice -eq "y") {
 
 Write-Host "Preparing System Restore..." -ForegroundColor Yellow
 
-# ปลดล็อก 24 ชั่วโมง
-New-ItemProperty `
--Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore" `
--Name "SystemRestorePointCreationFrequency" `
--PropertyType DWord `
--Value 0 `
--Force | Out-Null
+$choice = Read-Host "Create Restore Point before tweak? (Y/N)"
+
+if ($choice -eq "Y" -or $choice -eq "y") {
+
+Write-Host "Preparing System Restore..." -ForegroundColor Yellow
 
 # เปิด System Protection
 Enable-ComputerRestore -Drive "C:\" -ErrorAction SilentlyContinue
 
 # ปรับพื้นที่เป็น 5%
 vssadmin resize shadowstorage /for=C: /on=C: /maxsize=5% | Out-Null
+
+# ลบ restore point เก่า
+vssadmin delete shadows /for=C: /all /quiet
 
 Start-Sleep 2
 

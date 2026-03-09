@@ -20,36 +20,52 @@ Write-Host "Running Script..." -ForegroundColor Cyan
 
 Write-Host "Applying Lanman Server Tweaks..." -ForegroundColor Yellow
 
-$path1 = "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters"
+$server = "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters"
+$serverPolicy = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LanmanServer"
 
-New-Item -Path $path1 -Force | Out-Null
+New-Item -Path $server -Force | Out-Null
+New-Item -Path $serverPolicy -Force | Out-Null
 
-New-ItemProperty -Path $path1 `
+# Cipher suite order
+New-ItemProperty -Path $server `
 -Name "Smb2CipherSuiteOrder" `
 -PropertyType MultiString `
 -Value "AES_256_GCM" `
 -Force | Out-Null
 
-New-ItemProperty -Path $path1 `
+# Honor cipher suite order
+New-ItemProperty -Path $server `
 -Name "Smb2HonorCipherSuiteOrder" `
 -PropertyType DWord `
 -Value 1 `
 -Force | Out-Null
 
-
-Set-ItemProperty -Path $path2 `
+# Hash Publication for BranchCache
+New-ItemProperty -Path $serverPolicy `
 -Name "HashPublicationForBranchCache" `
--Value 1
-
-Set-ItemProperty -Path $path2 `
--Name "HashVersionSupportForBranchCache" `
--Value 3
-
-New-ItemProperty -Path $path2 `
--Name "Smb2HonorCipherSuiteOrder" `
 -PropertyType DWord `
 -Value 1 `
 -Force | Out-Null
+
+# Hash Version support for BranchCache
+New-ItemProperty -Path $serverPolicy `
+-Name "HashVersionSupportForBranchCache" `
+-PropertyType DWord `
+-Value 3 `
+-Force | Out-Null
+
+# Lanman Workstation
+$workstation = "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters"
+
+New-Item -Path $workstation -Force | Out-Null
+
+# Cipher suite order
+New-ItemProperty -Path $workstation `
+-Name "Smb2CipherSuiteOrder" `
+-PropertyType MultiString `
+-Value "AES_256_GCM" `
+-Force | Out-Null
+
 
 Write-Host "Applying Network Isolation Tweaks..." -ForegroundColor Yellow
 

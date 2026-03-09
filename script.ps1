@@ -35,6 +35,19 @@ New-ItemProperty -Path $path1 `
 -Value 1 `
 -Force | Out-Null
 
+Set-ItemProperty -Path $path2 `
+-Name "HashPublicationForBranchCache" `
+-Value 1
+
+Set-ItemProperty -Path $path2 `
+-Name "HashVersionSupportForBranchCache" `
+-Value 3
+
+New-ItemProperty -Path $path2 `
+-Name "Smb2HonorCipherSuiteOrder" `
+-PropertyType DWord `
+-Value 1 `
+-Force | Out-Null
 
 # ===== GPEDIT POLICY VALUES =====
 
@@ -127,4 +140,63 @@ New-ItemProperty -Path $path5 `
 
 Write-Host "Network Isolation Tweaks Applied!" -ForegroundColor Green
 
+Write-Host "Applying QoS Packet Scheduler Tweaks..." -ForegroundColor Yellow
+
+$qos = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Psched"
+
+New-Item -Path $qos -Force | Out-Null
+
+New-ItemProperty -Path $qos `
+-Name "MaxOutstandingSends" `
+-PropertyType DWord `
+-Value 65536 `
+-Force | Out-Null
+
+New-ItemProperty -Path $qos `
+-Name "NonBestEffortLimit" `
+-PropertyType DWord `
+-Value 0 `
+-Force | Out-Null
+
+New-ItemProperty -Path $qos `
+-Name "TimerResolution" `
+-PropertyType DWord `
+-Value 12 `
+-Force | Out-Null
+
+Write-Host "QoS Tweaks Applied!" -ForegroundColor Green
+
+Write-Host "Applying Network Provider Tweaks..." -ForegroundColor Yellow
+
+$provider = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider"
+
+New-Item -Path $provider -Force | Out-Null
+
+New-ItemProperty -Path $provider `
+-Name "latancy" `
+-PropertyType String `
+-Value "999999999" `
+-Force | Out-Null
+
+Write-Host "Network Provider Tweaks Applied!" -ForegroundColor Green
+
+Write-Host "Applying Privacy Tweaks..." -ForegroundColor Yellow
+
+$privacy = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy"
+
+New-Item -Path $privacy -Force | Out-Null
+
+New-ItemProperty -Path $privacy `
+-Name "LetAppsRunInBackground" `
+-PropertyType DWord `
+-Value 1 `
+-Force | Out-Null
+
+Write-Host "Privacy Tweaks Applied!" -ForegroundColor Green
+
+Restart-Service LanmanServer -Force -ErrorAction SilentlyContinue
+Restart-Service LanmanWorkstation -Force -ErrorAction SilentlyContinue
+
 gpupdate /force
+
+Write-Host "All Tweaks Gpedit X Successfully!" -ForegroundColor Gree

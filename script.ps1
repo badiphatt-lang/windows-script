@@ -27,12 +27,6 @@ New-Item -Path $path1 -Force | Out-Null
 New-Item -Path $path2 -Force | Out-Null
 
 New-ItemProperty -Path $path1 `
--Name "Smb2CipherSuiteOrder" `
--PropertyType MultiString `
--Value "AES_256_GCM","AES_256_GCM","AES_256_GCM","AES_256_GCM" `
--Force | Out-Null
-
-New-ItemProperty -Path $path1 `
 -Name "Smb2HonorCipherSuiteOrder" `
 -PropertyType DWord `
 -Value 1 `
@@ -76,8 +70,6 @@ New-ItemProperty -Path $path4 `
 -Force | Out-Null
 
 Write-Host "Successfully." -ForegroundColor Green
-
-
 Write-Host "Successfully." -ForegroundColor Yellow
 
 $privacy = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy"

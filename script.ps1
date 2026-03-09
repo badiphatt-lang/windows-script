@@ -63,11 +63,68 @@ New-Item -Path $path3 -Force | Out-Null
 
 New-ItemProperty -Path $path3 `
 -Name "Functions" `
--PropertyType String `
--Value "AES_256_GCM,AES_256_GCM,AES_256_GCM,AES_256_GCM" `
+-PropertyType MultiString `
+-Value "AES_256_GCM","AES_256_GCM","AES_256_GCM","AES_256_GCM" `
 -Force | Out-Null
 
-
 Write-Host "Lanman Server Tweaks Applied!" -ForegroundColor Green
+
+Write-Host "Applying Lanman Workstation Tweaks..." -ForegroundColor Yellow
+
+$path4 = "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters"
+
+New-Item -Path $path4 -Force | Out-Null
+
+New-ItemProperty -Path $path4 `
+-Name "Smb2CipherSuiteOrder" `
+-PropertyType MultiString `
+-Value "AES_256_GCM","AES_256_GCM","AES_256_GCM","AES_256_GCM" `
+-Force | Out-Null
+
+New-ItemProperty -Path $path4 `
+-Name "Smb2HonorCipherSuiteOrder" `
+-PropertyType DWord `
+-Value 1 `
+-Force | Out-Null
+
+Write-Host "Lanman Workstation Tweaks Applied!" -ForegroundColor Green
+
+Write-Host "Applying Network Isolation Tweaks..." -ForegroundColor Yellow
+
+$path5 = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkIsolation"
+
+New-Item -Path $path5 -Force | Out-Null
+
+New-ItemProperty -Path $path5 `
+-Name "EnterpriseProxyServers" `
+-PropertyType String `
+-Value "LinkId=999999999" `
+-Force | Out-Null
+
+New-ItemProperty -Path $path5 `
+-Name "EnterpriseCloudResources" `
+-PropertyType String `
+-Value "LinkId=999999999" `
+-Force | Out-Null
+
+New-ItemProperty -Path $path5 `
+-Name "EnterpriseInternalProxyServers" `
+-PropertyType String `
+-Value "LinkId=999999999" `
+-Force | Out-Null
+
+New-ItemProperty -Path $path5 `
+-Name "EnterpriseDomains" `
+-PropertyType String `
+-Value "LinkId=999999999" `
+-Force | Out-Null
+
+New-ItemProperty -Path $path5 `
+-Name "EnterprisePrivateNetworkRanges" `
+-PropertyType String `
+-Value "LinkId=999999999" `
+-Force | Out-Null
+
+Write-Host "Network Isolation Tweaks Applied!" -ForegroundColor Green
 
 gpupdate /force

@@ -320,9 +320,6 @@ Write-Host "Registry Tweaks Applied!" -ForegroundColor Green
 
 Write-Host "Applying Boot Optimization..." -ForegroundColor Yellow
 
-cmd /c "bcdedit /set useplatformtick yes"
-cmd /c "bcdedit /set disabledynamictick yes"
-
 Write-Host "Boot Tweaks Applied!" -ForegroundColor Green
 
 

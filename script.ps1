@@ -111,9 +111,6 @@ New-ItemProperty -Path $privacy `
 -Force | Out-Null
 
 Write-Host "Background Apps Forced Deny Applied!" -ForegroundColor Green
-
-gpupdate /force
-
 New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" -Name "NetworkThrottlingIndex" -Value 1 -PropertyType DWord -Force
 
 cmd /c "netsh int tcp set global autotuninglevel=disabled"
@@ -138,6 +135,18 @@ cmd /c "netsh int tcp set global chimney=disabled"
 cmd /c "netsh advfirewall firewall add rule name=""LagSimulator"" dir=out action=block remoteip=1.1.1.1"
 New-NetQosPolicy -Name "LagExtreme" -AppPathNameMatchCondition "*" -NetworkProfile All -ThrottleRateActionBitsPerSecond 10000
 
+Write-Host "Applying Network Adapter Settings..." -ForegroundColor Yellow
+
+$adapter = "Ethernet"
+
+Set-NetAdapterAdvancedProperty -Name $adapter -DisplayName "Shutdown Wake-On-Lan" -DisplayValue "Disabled" -NoRestart
+Set-NetAdapterAdvancedProperty -Name $adapter -DisplayName "Receive Buffers" -DisplayValue "32" -NoRestart
+Set-NetAdapterAdvancedProperty -Name $adapter -DisplayName "Transmit Buffers" -DisplayValue "64" -NoRestart
+
+Restart-NetAdapter -Name $adapter -Confirm:$false
+
+Write-Host "Network Settings Applied!" -ForegroundColor Green
+
 $kb = "HKCU:\Control Panel\Keyboard"
 Set-ItemProperty -Path $kb -Name "InitialKeyboardIndicators" -Value "0"
 Set-ItemProperty -Path $kb -Name "KeyboardDelay" -Value "1"
@@ -148,28 +157,6 @@ New-ItemProperty -Path $kb `
 -PropertyType DWord `
 -Value 0 `
 -Force | Out-Null
-
-$mouse = "HKCU:\Control Panel\Mouse"
-Set-ItemProperty -Path $mouse -Name "MouseSensitivity" -Value "10"
-Set-ItemProperty -Path $mouse -Name "Beep" -Value "No"
-Set-ItemProperty -Path $mouse -Name "DoubleClickHeight" -Value "4"
-Set-ItemProperty -Path $mouse -Name "DoubleClickSpeed" -Value "200"
-Set-ItemProperty -Path $mouse -Name "DoubleClickWidth" -Value "4"
-Set-ItemProperty -Path $mouse -Name "ExtendedSounds" -Value "No"
-Set-ItemProperty -Path $mouse -Name "MouseHoverHeight" -Value "4"
-Set-ItemProperty -Path $mouse -Name "MouseHoverTime" -Value "400"
-Set-ItemProperty -Path $mouse -Name "MouseHoverWidth" -Value "4"
-Set-ItemProperty -Path $mouse -Name "MouseSensitivity" -Value "10"
-Set-ItemProperty -Path $mouse -Name "MouseSpeed" -Value "0"
-Set-ItemProperty -Path $mouse -Name "MouseThreshold1" -Value "0"
-Set-ItemProperty -Path $mouse -Name "MouseThreshold2" -Value "0"
-Set-ItemProperty -Path $mouse -Name "MouseTrails" -Value "0"
-Set-ItemProperty -Path $mouse -Name "SnapToDefaultButton" -Value "0"
-Set-ItemProperty -Path $mouse -Name "SwapMouseButtons" -Value "0"
-
-Set-ItemProperty -Path $mouse -Name "SmoothMouseXCurve" -Type Binary -Value ([byte[]](0,0,0,0,0,0,0,0,21,110,0,0,0,0,0,0,0,64,1,0,0,0,0,0,41,220,3,0,0,0,0,0,0,0,40,0,0,0,0,0))
-
-Set-ItemProperty -Path $mouse -Name "SmoothMouseYCurve" -Type Binary -Value ([byte[]](0,0,0,0,0,0,0,0,253,17,1,0,0,0,0,0,0,36,4,0,0,0,0,0,0,252,18,0,0,0,0,0,0,192,187,1,0,0,0,0))
 
 $prio = "HKLM:\SYSTEM\CurrentControlSet\Control\PriorityControl"
 
@@ -192,6 +179,160 @@ New-ItemProperty -Path $game `
 -PropertyType DWord `
 -Value 0 `
 -Force | Out-Null
+
+Write-Host "Applying FPS & Input Lag Tweaks..." -ForegroundColor Yellow
+
+# Mouse input lag tweaks
+$mouse = "HKCU:\Control Panel\Mouse"
+
+Set-ItemProperty -Path $mouse -Name "MouseSpeed" -Value "0"
+Set-ItemProperty -Path $mouse -Name "MouseThreshold1" -Value "0"
+Set-ItemProperty -Path $mouse -Name "MouseThreshold2" -Value "0"
+
+# SystemProfile tweaks
+$systemProfile = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile"
+
+New-ItemProperty -Path $systemProfile `
+-Name "SystemResponsiveness" `
+-PropertyType DWord `
+-Value 0 `
+-Force | Out-Null
+
+New-ItemProperty -Path $systemProfile `
+-Name "NetworkThrottlingIndex" `
+-PropertyType DWord `
+-Value 4294967295 `
+-Force | Out-Null
+
+# Game scheduling tweaks
+$games = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games"
+
+New-ItemProperty -Path $games `
+-Name "GPU Priority" `
+-PropertyType DWord `
+-Value 8 `
+-Force | Out-Null
+
+New-ItemProperty -Path $games `
+-Name "Priority" `
+-PropertyType DWord `
+-Value 6 `
+-Force | Out-Null
+
+New-ItemProperty -Path $games `
+-Name "Scheduling Category" `
+-PropertyType String `
+-Value "High" `
+-Force | Out-Null
+
+New-ItemProperty -Path $games `
+-Name "SFIO Priority" `
+-PropertyType String `
+-Value "High" `
+-Force | Out-Null
+
+# USB latency tweak
+$usb = "HKLM:\SYSTEM\CurrentControlSet\Services\USB"
+
+New-ItemProperty -Path $usb `
+-Name "DisableSelectiveSuspend" `
+-PropertyType DWord `
+-Value 1 `
+-Force | Out-Null
+
+# TCP latency tweaks
+$tcp = "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters"
+
+New-ItemProperty -Path $tcp `
+-Name "TcpNoDelay" `
+-PropertyType DWord `
+-Value 1 `
+-Force | Out-Null
+
+New-ItemProperty -Path $tcp `
+-Name "TCPAckFrequency" `
+-PropertyType DWord `
+-Value 1 `
+-Force | Out-Null
+
+New-ItemProperty -Path $tcp `
+-Name "TCPDelAckTicks" `
+-PropertyType DWord `
+-Value 0 `
+-Force | Out-Null
+
+New-ItemProperty -Path $tcp `
+-Name "DefaultTTL" `
+-PropertyType DWord `
+-Value 64 `
+-Force | Out-Null
+
+Write-Host "FPS & Input Tweaks Applied!" -ForegroundColor Green
+Write-Host "FPS & Input Tweaks Applied!" -ForegroundColor Green
+Write-Host "FPS & Input Tweaks Applied!" -ForegroundColor Green
+Write-Host "FPS & Input Tweaks Applied!" -ForegroundColor Green
+Write-Host "FPS & Input Tweaks Applied!" -ForegroundColor Green
+Write-Host "FPS & Input Tweaks Applied!" -ForegroundColor Green
+Write-Host "Applying Service Optimization..." -ForegroundColor Yellow
+
+cmd /c "sc stop wuauserv"
+cmd /c "sc config wuauserv start= disabled"
+
+cmd /c "sc stop WinDefend"
+
+cmd /c "sc stop WSearch"
+cmd /c "sc config WSearch start= disabled"
+
+cmd /c "sc stop SysMain"
+cmd /c "sc config SysMain start= disabled"
+
+cmd /c "sc stop Spooler"
+cmd /c "sc config Spooler start= disabled"
+
+cmd /c "sc stop XblAuthManager"
+cmd /c "sc stop XblGameSave"
+cmd /c "sc stop XboxNetApiSvc"
+cmd /c "sc stop XboxGipSvc"
+
+cmd /c "sc config XblAuthManager start= disabled"
+cmd /c "sc config XblGameSave start= disabled"
+cmd /c "sc config XboxNetApiSvc start= disabled"
+cmd /c "sc config XboxGipSvc start= disabled"
+
+cmd /c "sc stop DiagTrack"
+cmd /c "sc config DiagTrack start= disabled"
+
+Write-Host "Services Disabled!" -ForegroundColor Green
+
+
+Write-Host "Applying Registry Optimization..." -ForegroundColor Yellow
+
+cmd /c "reg add HKCU\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications /v GlobalUserDisabled /t REG_DWORD /d 1 /f"
+
+cmd /c "reg add HKCU\Software\Microsoft\GameBar /v AllowAutoGameMode /t REG_DWORD /d 0 /f"
+
+cmd /c "reg add HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile /v NetworkThrottlingIndex /t REG_DWORD /d 4294967295 /f"
+
+cmd /c "reg add HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile /v SystemResponsiveness /t REG_DWORD /d 0 /f"
+
+Write-Host "Registry Tweaks Applied!" -ForegroundColor Green
+
+
+Write-Host "Applying Boot Optimization..." -ForegroundColor Yellow
+
+cmd /c "bcdedit /set useplatformtick yes"
+cmd /c "bcdedit /set disabledynamictick yes"
+
+Write-Host "Boot Tweaks Applied!" -ForegroundColor Green
+
+
+Write-Host "Starting FiveM with High Priority..." -ForegroundColor Yellow
+
+Start-Process "C:\Users\$env:USERNAME\AppData\Local\FiveM\FiveM.exe" -Priority High
+
+Write-Host "FiveM Launched!" -ForegroundColor Green
+
+gpupdate /force
 
 # เปิดการแสดงผลกลับ
 $InformationPreference = "Continue"

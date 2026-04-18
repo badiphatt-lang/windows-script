@@ -147,17 +147,6 @@ Restart-NetAdapter -Name $adapter -Confirm:$false
 
 Write-Host "Network Settings Applied!" -ForegroundColor Green
 
-$kb = "HKCU:\Control Panel\Keyboard"
-Set-ItemProperty -Path $kb -Name "InitialKeyboardIndicators" -Value "0"
-Set-ItemProperty -Path $kb -Name "KeyboardDelay" -Value "1"
-Set-ItemProperty -Path $kb -Name "KeyboardSpeed" -Value "31"
-
-New-ItemProperty -Path $kb `
--Name "PrintScreenKeyForSnippingEnabled" `
--PropertyType DWord `
--Value 0 `
--Force | Out-Null
-
 $prio = "HKLM:\SYSTEM\CurrentControlSet\Control\PriorityControl"
 
 New-ItemProperty -Path $prio `
@@ -181,13 +170,6 @@ New-ItemProperty -Path $game `
 -Force | Out-Null
 
 Write-Host "Applying FPS & Input Lag Tweaks..." -ForegroundColor Yellow
-
-# Mouse input lag tweaks
-$mouse = "HKCU:\Control Panel\Mouse"
-
-Set-ItemProperty -Path $mouse -Name "MouseSpeed" -Value "0"
-Set-ItemProperty -Path $mouse -Name "MouseThreshold1" -Value "0"
-Set-ItemProperty -Path $mouse -Name "MouseThreshold2" -Value "0"
 
 # SystemProfile tweaks
 $systemProfile = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile"
